@@ -43,7 +43,7 @@ void loop() {
   message += " | Vibration: " + String(vibrationState);
 
   // Send SMS
-  simModule.println("AT+CMGS=\"+919067100945""); // Replace phone number
+  simModule.println("AT+CMGS=\"+919067xxxxx""); // Replace phone number
   delay(1000);
   simModule.println(message);
   simModule.write(26);
