@@ -3,12 +3,14 @@
 #include <SoftwareSerial.h>
 
 MPU6050 mpu;
-SoftwareSerial simModule(7, 8); // SIMA7670C connected to pins 7 RX and 8 TX
+SoftwareSerial simModule(7, 8);                           // SIMA7670C connected to pins 7 RX and 8 TX
 int vibrationSensorPin = 2;
 int vibrationState = 0;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void setup() {
-  // start comms
+                                                          // start comms
   Serial.begin(9600);
   simModule.begin(9600);
   
@@ -21,31 +23,33 @@ void setup() {
     Serial.println("MPU6050 connection failed.");
   }
 
-  //vibration sesor input
+                                                        
   pinMode(vibrationSensorPin, INPUT);
 
-  // create message
+                                                        // create message
   simModule.println("AT"); 
   delay(1000);
-  simModule.println("AT+CMGF=1"); //SMS text mode
+  simModule.println("AT+CMGF=1");                       //SMS text mode from ATcommands
   delay(1000);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void loop() {
   vibrationState = digitalRead(vibrationSensorPin);
 
-  // gyro readings 
+                                                        // gyro readings 
   int16_t ax, ay, az, gx, gy, gz;
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
-  // data packet
+                                                        // data packet
   String message = "Gyro Data: Gx=" + String(gx) + ", Gy=" + String(gy) + ", Gz=" + String(gz);
   message += " | Vibration: " + String(vibrationState);
 
-  // Send SMS
+                                                        // Send SMS
   simModule.println("AT+CMGS=\"+919067xxxxx""); // Replace phone number
   delay(1000);
   simModule.println(message);
   simModule.write(26);
-  delay(5000);
+  delay(60000);
 }
